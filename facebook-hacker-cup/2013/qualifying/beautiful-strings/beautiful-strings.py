@@ -60,6 +60,8 @@ def get_max_beauty(input_string,
     # order of these occurrences.
     # So we'll throw away the letter value but replace it with the index of
     # each item in the sorted list (via enumerate).
+    # Reference:
+    # http://stackoverflow.com/questions/613183/python-sort-a-dictionary-by-value
     sorted_occurrences = [(index, item[1])
                           for index, item
                           in enumerate(sorted(char_occurrences.iteritems(),
