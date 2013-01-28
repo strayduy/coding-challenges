@@ -52,7 +52,7 @@ def get_nth_element_of_m(m, n):
 
     next_value = popped_value = 0
 
-    for i in range(len(m), n):
+    for i in xrange(len(m), n):
         # Determine the minimum possible value that could appear next
         next_value = min(next_value, popped_value)
 
