@@ -33,7 +33,6 @@ def main(argv):
             nth_element = get_nth_element_of_m(m, n)
             print "Case #%d: %d" % (test_case_number, nth_element)
 
-# Generator that spits out successive values for an m array
 def get_nth_element_of_m(m, n):
     # sliding_window keeps track of the previous k elements.
     # deque has constant time appending and removal of elements from the ends
