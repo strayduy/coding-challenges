@@ -44,10 +44,14 @@ def next_min(initial_values):
     # Counter has constant time "contains" lookup
     occurrences = collections.Counter(initial_values)
 
+    next_value = popped_value = 0
+
     while True:
-        # Increment upwards from zero until we find a value that doesn't
-        # already appear in our list
-        next_value = 0
+        # Determine the minimum possible value that could appear next
+        next_value = min(next_value, popped_value)
+
+        # Increment upwards from that minimum until we find a value that
+        # doesn't already appear in our list
         while next_value in occurrences:
             next_value += 1
         yield next_value
@@ -65,11 +69,11 @@ def next_min(initial_values):
         occurrences[next_value] += 1
 
 def get_nth_element_of_m(m, n):
-    limit = n - len(m)
+    limit = n - len(m) - 1
 
     # Iterate through our generator until we get to the nth element
     for i, value in enumerate(next_min(m)):
-        if i >= limit - 1:
+        if i >= limit:
             break
 
     return value
