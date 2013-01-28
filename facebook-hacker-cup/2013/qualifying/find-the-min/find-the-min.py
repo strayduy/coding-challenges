@@ -34,19 +34,25 @@ def main(argv):
             print "Case #%d: %d" % (test_case_number, nth_element)
 
 # Generator that spits out successive values for an m array
-def next_min(initial_values):
+def get_nth_element_of_m(m, n):
     # sliding_window keeps track of the previous k elements.
     # deque has constant time appending and removal of elements from the ends
     # of the list.
-    sliding_window = collections.deque(initial_values)
+    sliding_window = collections.deque(m)
 
     # occurrences keeps track of how many times each value appears in the list
     # Counter has constant time "contains" lookup
-    occurrences = collections.Counter(initial_values)
+    occurrences = collections.Counter(m)
+
+    # We'll look for cycles as we generate new values
+    # If a value comes up more than once, then that indicates the start of a
+    # cycle. Once we find a cycle, we can work some modulo magic to compute
+    # the nth element of m, instead of continuing to iterate.
+    memoized_cycle = []
 
     next_value = popped_value = 0
 
-    while True:
+    for i in range(len(m), n):
         # Determine the minimum possible value that could appear next
         next_value = min(next_value, popped_value)
 
@@ -54,7 +60,16 @@ def next_min(initial_values):
         # doesn't already appear in our list
         while next_value in occurrences:
             next_value += 1
-        yield next_value
+
+        # Check whether we've looped back around to the beginning of a cycle
+        if memoized_cycle and next_value == memoized_cycle[0]:
+            # If this is the start of a cycle, compute the value of the nth
+            # element
+            cycle_length = len(memoized_cycle)
+            return memoized_cycle[(n - i - 1) % cycle_length]
+        else:
+            # Otherwise, keep building the cycle list
+            memoized_cycle.append(next_value)
 
         # Pop off the leftmost value from the list
         # Update our counter accordingly
@@ -68,15 +83,7 @@ def next_min(initial_values):
         sliding_window.append(next_value)
         occurrences[next_value] += 1
 
-def get_nth_element_of_m(m, n):
-    limit = n - len(m) - 1
-
-    # Iterate through our generator until we get to the nth element
-    for i, value in enumerate(next_min(m)):
-        if i >= limit:
-            break
-
-    return value
+    return next_value
 
 def generate_m(k, a, b, c, r):
     m = [a]
